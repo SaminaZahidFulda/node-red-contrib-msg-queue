@@ -31,7 +31,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		<input type="text" id="node-input-disconnected" placeholder="pattern">
 	</div>
 	<div class="form-row">
-		<label for="node-input-sqlite"><i class="fa-file"></i>Path to SQLite DB file</label>
+		<label for="time_interval">Time Interval (ms)</label>
+		<input type="text" id="node-input-time" placeholder="time interval">
+	</div>
+	<div class="form-row">
+		<label for="node-input-sqlite"><i class="fa-file"></i>SQLite DB file</label>
 		<input type="text" id="node-input-sqlite" placeholder="file path">
 	</div>
 </script>
@@ -82,6 +86,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				connectedType: {value: "str"},
 				disconnected: {value: "", validate:function(val) { return (val !== '' || this.connected !== '');}},
 				disconnectedType: {value: "str"},
+				time: {value: ""},
 				sqlite: {value: "", required: true}
 			},
 			inputs: 1,

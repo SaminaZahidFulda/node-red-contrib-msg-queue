@@ -37,6 +37,7 @@ module.exports = function (RED) {
 		this.connectedMatch = config.connected;
 		this.connectedMatchType = config.connectedType;
 		this.disconnectedMatch = config.disconnected;
+		this.time_interval = config.time  || 500 ;
 		this.disconnectedMatchType = config.disconnectedType;
 
 		/**
@@ -52,7 +53,7 @@ module.exports = function (RED) {
 		 * @type {QueueNode}
 		 */
 		var node = this;
-
+       
 		/**
 		 * The status of the connection for the downstream node
 		 * @type {boolean} isConnected === true, otherwise false
@@ -96,6 +97,7 @@ module.exports = function (RED) {
 
 		// Send messages from the queue downstream
 		queue.on('next',function(msg) {
+			
 			node.send(msg.job) ;
 			queue.done() ;
 		}) ;
@@ -163,7 +165,7 @@ module.exports = function (RED) {
 		function setStatusTimer() {
 			if(!isConnected || isConnected && !queue.isEmpty()) {
 				if(!statusTimer)
-					statusTimer = setInterval(statusOutput,500) ;
+					statusTimer = setInterval(statusOutput,this.time_interval) ;
 			} else if(statusTimer) {
 				clearInterval(statusTimer) ;
 				statusTimer = null ;
@@ -185,10 +187,10 @@ module.exports = function (RED) {
 			// queue.isEmpty() && isConnected
 			var s ;
 			var remaining = " (" + queue.getLength() + ")" ;
-
+          
 			if(!queue.isEmpty() && isConnected) {
 				s = {
-					fill:"green", shape:"ring", text:"Processing" + remaining
+					fill:"green", shape:"ring", text: "Processing" + remaining
 				} ;
 			}
 			else if(queue.isEmpty() && isConnected) {
