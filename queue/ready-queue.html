@@ -31,9 +31,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		<input type="text" id="node-input-disconnected" placeholder="pattern">
 	</div>
 	<div class="form-row">
-		<label for="time_interval">Time Interval (ms)</label>
-		<input type="text" id="node-input-time" placeholder="time interval">
+		<label for="node-input-time">Time Interval</label>
+		<input type="text" id="node-input-time" placeholder="interval">
 	</div>
+
 	<div class="form-row">
 		<label for="node-input-sqlite"><i class="fa-file"></i>SQLite DB file</label>
 		<input type="text" id="node-input-sqlite" placeholder="file path">
@@ -70,9 +71,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		value is given, then any status text doesn't match either, will be ignored, and
 		the current state will remain.</p>
 
+		<p>Here,<i>Time Interval</i> 
+			value is given,which will show the status in this given time and will fasten the flow of message in queue.
+			<i>Further Enhancement Required</i> 
+			The speed of the dequeuing should be infrastructure agnostic, so a programmatic access to the configuration within the flow without hitting the "Deploy Button".
+			<i>Other way</i>
+		Function node can be addeWd between message and queue node, and new property "msg.dequeueInterval" added and value of this can be change to slow or fast queue. 
+		</p>
+	
+
 		<p>You must also specify a filename for the sqlite database that stores queued
 		messages during a <i>disconnected</i> state.  This database file <strong>must not</strong> be
 		shared between multiple queue nodes.</p>
+
+
+
 </script>
 
 <script type="text/javascript">

@@ -37,7 +37,7 @@ module.exports = function (RED) {
 		this.connectedMatch = config.connected;
 		this.connectedMatchType = config.connectedType;
 		this.disconnectedMatch = config.disconnected;
-		this.time_interval = config.time  || 500 ;
+		this.time_interval = config.time || 500;
 		this.disconnectedMatchType = config.disconnectedType;
 
 		/**
@@ -59,6 +59,13 @@ module.exports = function (RED) {
 		 * @type {boolean} isConnected === true, otherwise false
 		 */
 		var isConnected = false;
+
+		/**
+		 * Store default time interval for showing status of dequeuing 
+		 * @type {int} will contain value entered in function node for dequeuing interval else by default 500
+		 */
+		var time_interval_dequeue = 500;
+
 
 		/**
 		 * Store status msg object received while sqlite waiting on I/O opening the DB
@@ -119,6 +126,7 @@ module.exports = function (RED) {
 
 		// Log when queue is empty
 		queue.on('empty',function() {
+		//	node.time_interval = config.time ;
 			statusOutput() ;
 			setStatusTimer() ;
 			node.log('Queue now empty') ;
@@ -165,7 +173,10 @@ module.exports = function (RED) {
 		function setStatusTimer() {
 			if(!isConnected || isConnected && !queue.isEmpty()) {
 				if(!statusTimer)
-					statusTimer = setInterval(statusOutput,this.time_interval) ;
+				{
+					statusTimer = setInterval(statusOutput,node.time_interval) ;
+			    }
+			  
 			} else if(statusTimer) {
 				clearInterval(statusTimer) ;
 				statusTimer = null ;
@@ -330,11 +341,33 @@ module.exports = function (RED) {
 			node.on('input', function (msg) {
 
 				// status message
-				if (msg.hasOwnProperty('status')) {
-					processStatus(msg) ;
+				if (msg.hasOwnProperty('status') ) {
+				    processStatus(msg) ;
 					return ;
 				}
 
+                /**
+				 * 
+				 * Another way to fasten the status of dequeuing process, as mention in information of queue-node.
+				 * Problem here is, each time we change this value, flow needs to deploy again. 
+				 * It should be ideally, done programmatically.
+				 * My try is this to check dequeuing interval is in comments.
+				 * 
+				 * 
+				 * if (msg.hasOwnProperty('dequeingInterval') ) {
+				 * isConnected = false;
+				 * setTimeout(function() { isConnected = false; }, 1);
+				 * disconnected();
+				 * var new1 = msg.dequeingInterval;
+				 * node.time_interval_dequeue = new1;
+				 * node.log("Opened " + new1 + " successfully.") ;
+				 * return ;
+				 * }
+				 *
+				 */
+				
+				
+				
 				// upstream message to send on
 				if(isConnected && queue.isEmpty()) {
 						node.send(msg);
